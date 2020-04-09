@@ -19,5 +19,5 @@ def variable_parameter(test, *args, **kwargs):
 
 
 if __name__ == '__main__':
-    print "Hello World"
-    variable_parameter("This is a test", 1, 2, 3, name='eagle', age=10, hobby=['eat', 'drunk', 'play', 'happy'])
+    print "This is a Variable Parameter"
+    variable_parameter("Test", 1, 2, 3, name='eagle', age=10, hobby=['eat', 'drunk', 'play', 'happy'])
