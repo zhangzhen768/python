@@ -1,22 +1,8 @@
 ### SQL的语言分类	
 - DQL（Data Query Language）：数据查询语言	select	
-- DML(DataManipulateLanguage):数据操作语言	insert 、update、delete	
-- DDL（DataDefine Languge）：数据定义语言	create、drop、alter
-- TCL（TransactionControl Language）：事务控制语言	commit、rollback
-
-### SQL的常见命令
-
-	show databases； 查看所有的数据库
-	use 库名； 打开指定 的库
-	show tables ; 显示库中的所有表
-	show tables from 库名;显示指定库中的所有表
-	create table 表名(
-		字段名 字段类型,	
-		字段名 字段类型
-	); 创建表
-
-	desc 表名; 查看指定表的结构
-	select * from 表名;显示表中的所有数据
+- DML(Data Manipulate Language):数据操作语言	insert 、update、delete	
+- DDL（Data Define Language）：数据定义语言	create、drop、alter
+- TCL（Transaction Control Language）：事务控制语言	commit、rollback
 
 
 ## DQL语言的学习
@@ -25,7 +11,7 @@
 
 	语法：
 	SELECT 要查询的东西
-	【FROM 表名】;
+	[FROM 表名];
 	特点：
 	① 通过select查询完的结果 ，是一个虚拟的表格，不是真实存在
 	② 要查询的东西 可以是常量值、可以是表达式、可以是字段、可以是函数
@@ -87,38 +73,24 @@
 		rtrim(source_str) 去右边空格
 		replace(source_str, substr_str, replace_str)替换
 		instr 返回子串第一次出现的索引
-		length 获取字节个数
+		length(str) 获取字节个数
 		
 	2、数学函数
 		round 四舍五入
 		rand 随机数
-		floor向下取整
-		ceil向上取整
-		mod取余
-		truncate截断
+		floor 向下取整
+		ceil 向上取整
+		mod 取余 和%一致
+		truncate 截断
 	3、日期函数
-		now当前系统日期+时间
-		curdate当前系统日期
-		curtime当前系统时间
-		str_to_date 将字符转换成日期
-		date_format将日期转换成字符
+		now 当前系统日期+时间
+		from_unixtime(BIGINT unixtime)
 	4、流程控制函数
-		if 处理双分支
 		case语句 处理多分支
 			情况1：处理等值判断
 			情况2：处理条件判断
-		
-	5、其他函数
-		version版本
-		database当前库
-		user当前连接用户
 
-
-	
-
-
-二、分组函数
-
+    二、分组函数
 
 		sum 求和
 		max 最大值
@@ -133,11 +105,12 @@
 	    3、都可以搭配distinct使用，用于统计去重后的结果
 		4、count的参数可以支持：
 			字段、*、常量值，一般放1
-	
-		   建议使用 count(*)
+		5、一般搭配 group by 使用
+
+		   建议使用 count(1)
 
 
-## 进阶5：分组查询
+### 分组查询
 
 	语法：
 	select 查询的字段，分组函数
@@ -157,60 +130,41 @@
 	5、可以支持排序
 	6、having后可以支持别名
 
-##进阶6：多表连接查询
+### 多表连接查询
 
 	笛卡尔乘积：如果连接条件省略或无效则会出现
 	解决办法：添加上连接条件
 	
-一、传统模式下的连接 ：等值连接——非等值连接
-
+一、通过join关键字实现连接
 
 	1.等值连接的结果 = 多个表的交集
 	2.n表连接，至少需要n-1个连接条件
 	3.多个表不分主次，没有顺序要求
-	4.一般为表起别名，提高阅读性和性能
-	
-二、sql99语法：通过join关键字实现连接
-
-	含义：1999年推出的sql语法
-	支持：
-	等值连接、非等值连接 （内连接）
-	外连接
-	交叉连接
+	4.必须为表起别名，提高阅读性和性能
 	
 	语法：
 	
 	select 字段，...
 	from 表1
-	【inner|left outer|right outer|cross】join 表2 on  连接条件
-	【inner|left outer|right outer|cross】join 表3 on  连接条件
-	【where 筛选条件】
-	【group by 分组字段】
-	【having 分组后的筛选条件】
-	【order by 排序的字段或表达式】
-	
-	好处：语句上，连接条件和筛选条件实现了分离，简洁明了！
+	[inner|left|outer|right] join 表2 on  连接条件
+	[inner|left|outer|right] join 表3 on  连接条件
+	[where 筛选条件]
+	[group by 分组字段]
+	[having 分组后的筛选条件]
+	[order by 排序的字段或表达式]
+
 
 	
-三、自连接
+二、自连接
 
 案例：查询员工名和直接上级的名称
-
-sql99
 
 	SELECT e.last_name,m.last_name
 	FROM employees e
 	JOIN employees m ON e.`manager_id`=m.`employee_id`;
 
-sql92
 
-
-	SELECT e.last_name,m.last_name
-	FROM employees e,employees m 
-	WHERE e.`manager_id`=m.`employee_id`;
-
-
-##进阶7：子查询
+## 子查询
 
 含义：
 
@@ -232,15 +186,14 @@ sql92
 		
 	② 多行子查询
 		结果集有多行
-		一般搭配多行操作符使用：any、all、in、not in
+		一般搭配多行操作符使用：in、not in
 		in： 属于子查询结果中的任意一个就行
-		any和all往往可以用其他查询代替
 	
-##进阶8：分页查询
+## 分页查询
 
 应用场景：
 
-	实际的web项目中需要根据用户的需求提交对应的分页查询的sql语句
+	限制输出的条数
 
 语法：
 
